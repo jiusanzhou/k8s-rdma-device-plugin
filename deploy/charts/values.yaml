@@ -4,6 +4,8 @@ image:
   pullPolicy: IfNotPresent
 
 rdma:
+  # Enable device plugin resource registration with kubelet
+  enableDevicePlugin: true
   # Resource name to register with kubelet
   resourceName: "rdma.io/hca"
   # Number of virtual RDMA resource slots to report

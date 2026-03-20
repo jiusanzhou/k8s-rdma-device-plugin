@@ -17,23 +17,25 @@ const (
 
 // Config holds all configuration for the RDMA device plugin.
 type Config struct {
-	ResourceName      string `yaml:"resourceName" json:"resourceName"`
-	ResourceCount     int    `yaml:"resourceCount" json:"resourceCount"`
-	NRIPluginName     string `yaml:"nriPluginName" json:"nriPluginName"`
-	NRIPluginIndex    int    `yaml:"nriPluginIndex" json:"nriPluginIndex"`
-	GPURDMAAutoInject bool   `yaml:"gpuRdmaAutoInject" json:"gpuRdmaAutoInject"`
-	Debug             bool   `yaml:"debug" json:"debug"`
-	LogPath           string `yaml:"logPath" json:"logPath"`
+	EnableDevicePlugin bool   `yaml:"enableDevicePlugin" json:"enableDevicePlugin"`
+	ResourceName       string `yaml:"resourceName" json:"resourceName"`
+	ResourceCount      int    `yaml:"resourceCount" json:"resourceCount"`
+	NRIPluginName      string `yaml:"nriPluginName" json:"nriPluginName"`
+	NRIPluginIndex     int    `yaml:"nriPluginIndex" json:"nriPluginIndex"`
+	GPURDMAAutoInject  bool   `yaml:"gpuRdmaAutoInject" json:"gpuRdmaAutoInject"`
+	Debug              bool   `yaml:"debug" json:"debug"`
+	LogPath            string `yaml:"logPath" json:"logPath"`
 }
 
 // DefaultConfig returns a Config with default values.
 func DefaultConfig() *Config {
 	return &Config{
-		ResourceName:   DefaultResourceName,
-		ResourceCount:  DefaultResourceCount,
-		NRIPluginName:  DefaultNRIPluginName,
-		NRIPluginIndex: DefaultNRIPluginIdx,
-		LogPath:        DefaultLogPath,
+		EnableDevicePlugin: true,
+		ResourceName:       DefaultResourceName,
+		ResourceCount:      DefaultResourceCount,
+		NRIPluginName:      DefaultNRIPluginName,
+		NRIPluginIndex:     DefaultNRIPluginIdx,
+		LogPath:            DefaultLogPath,
 	}
 }
 
@@ -55,6 +57,9 @@ func LoadFromFile(path string) (*Config, error) {
 
 // ApplyEnvOverrides applies environment variable overrides to the config.
 func (c *Config) ApplyEnvOverrides() {
+	if v := os.Getenv("RDMA_ENABLE_DEVICE_PLUGIN"); v == "false" || v == "0" {
+		c.EnableDevicePlugin = false
+	}
 	if v := os.Getenv("RDMA_RESOURCE_NAME"); v != "" {
 		c.ResourceName = v
 	}

@@ -115,6 +115,7 @@ logPath: "-"
 
 | Variable | Description | Default |
 |----------|-------------|---------|
+| `RDMA_ENABLE_DEVICE_PLUGIN` | Enable device plugin resource registration (`false`/`0` to disable) | `true` |
 | `RDMA_RESOURCE_NAME` | Resource name to register | `rdma.io/hca` |
 | `RDMA_RESOURCE_COUNT` | Number of virtual resource slots | `100` |
 | `RDMA_NRI_PLUGIN_NAME` | NRI plugin name | `rdma-device-plugin` |
@@ -126,6 +127,7 @@ logPath: "-"
 
 ```
 --config                 Path to YAML config file
+--enable-device-plugin   Enable/disable RDMA resource registration (default: true)
 --resource-name          Custom resource name
 --resource-count         Number of virtual RDMA resources
 --gpu-rdma-auto-inject   Enable GPU-RDMA auto-injection
