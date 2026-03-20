@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "rdma-device-plugin.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "rdma-device-plugin.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "rdma-device-plugin.labels" . | nindent 8 }}
+    spec:
+      hostNetwork: true
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: DoesNotExist
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      volumes:
+        - name: device-plugins
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: nri-socket
+          hostPath:
+            path: /var/run/nri
+            type: DirectoryOrCreate
+        - name: sys
+          hostPath:
+            path: /sys
+            type: Directory
+        - name: config
+          configMap:
+            name: {{ .Chart.Name }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - k8s-rdma-device-plugin
+            - --config=/etc/rdma-device-plugin/config.yaml
+          securityContext:
+            privileged: false
+            runAsUser: 0
+            capabilities:
+              add:
+                - SYS_ADMIN
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: device-plugins
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: dev
+              mountPath: /dev
+              readOnly: true
+            - name: nri-socket
+              mountPath: /var/run/nri
+            - name: sys
+              mountPath: /sys
+              readOnly: true
+            - name: config
+              mountPath: /etc/rdma-device-plugin
+              readOnly: true

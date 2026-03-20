@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "rdma-device-plugin.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    resourceName: {{ .Values.rdma.resourceName | quote }}
+    resourceCount: {{ .Values.rdma.resourceCount }}
+    nriPluginName: {{ .Values.nri.pluginName | quote }}
+    nriPluginIndex: {{ .Values.nri.pluginIndex }}
+    gpuRdmaAutoInject: {{ .Values.gpuRdmaAutoInject }}
+    debug: {{ .Values.debug }}
+    logPath: {{ .Values.logPath | quote }}

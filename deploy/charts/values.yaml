@@ -1,0 +1,42 @@
+image:
+  repository: ghcr.io/jiusanzhou/k8s-rdma-device-plugin
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+rdma:
+  # Resource name to register with kubelet
+  resourceName: "rdma.io/hca"
+  # Number of virtual RDMA resource slots to report
+  resourceCount: 100
+
+# Automatically inject RDMA devices into GPU containers based on PCIe topology
+gpuRdmaAutoInject: false
+
+# NRI plugin settings
+nri:
+  pluginName: "rdma-device-plugin"
+  pluginIndex: 10
+
+# Enable debug logging
+debug: false
+
+# Log path ("-" for stdout)
+logPath: "-"
+
+# Node selector for scheduling (e.g. only RDMA-capable nodes)
+nodeSelector: {}
+#  node.network.rdma/enabled: "true"
+
+# Tolerations
+tolerations:
+  - operator: Exists
+    effect: NoSchedule
+
+# Resource limits
+resources:
+  limits:
+    cpu: "1"
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

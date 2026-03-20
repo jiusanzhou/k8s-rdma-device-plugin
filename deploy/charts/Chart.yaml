@@ -1,0 +1,9 @@
+apiVersion: v2
+name: k8s-rdma-device-plugin
+description: Kubernetes device plugin for RDMA NIC resource management
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+maintainers:
+  - name: jiusanzhou
+    url: https://github.com/jiusanzhou
