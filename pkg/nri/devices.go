@@ -366,12 +366,13 @@ func combineDevices(old, new []device) []device {
 
 func getEnvValue(env []string, key string) string {
 	prefix := key + "="
+	result := ""
 	for _, e := range env {
 		if strings.HasPrefix(e, prefix) {
-			return e[len(prefix):]
+			result = e[len(prefix):]
 		}
 	}
-	return ""
+	return result
 }
 
 func dump(ctx context.Context, args ...interface{}) {
