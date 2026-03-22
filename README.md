@@ -83,9 +83,12 @@ spec:
   containers:
     - name: vllm
       image: vllm/vllm-openai:latest
-      env:
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "0,1,2,3"
+      securityContext:
+        capabilities:
+          add:
+            - IPC_LOCK
+            - SYS_RESOURCE
+            - NET_RAW
       resources:
         limits:
           nvidia.com/gpu: "4"
@@ -146,9 +149,12 @@ spec:
   containers:
     - name: training
       image: nvidia/cuda:12.0-base
-      env:
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "0,1"
+      securityContext:
+        capabilities:
+          add:
+            - IPC_LOCK
+            - SYS_RESOURCE
+            - NET_RAW
       resources:
         limits:
           nvidia.com/gpu: "2"
