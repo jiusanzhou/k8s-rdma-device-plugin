@@ -310,7 +310,7 @@ make lint
 ## Requirements
 
 - Kubernetes 1.26+
-- containerd with NRI enabled (`enable_nri = true` in containerd config)
+- **containerd ≥ 1.7** with NRI enabled (`enable_nri = true` in containerd config) — NRI (Node Resource Interface) is the mechanism used to inject RDMA devices into containers at runtime
 - RDMA-capable network cards (Mellanox/NVIDIA ConnectX series)
 - For GPU-RDMA affinity: NVIDIA GPU driver installed
 
