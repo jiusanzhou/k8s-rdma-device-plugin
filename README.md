@@ -230,6 +230,21 @@ Using [containerd NRI](https://github.com/containerd/nri), the plugin hooks into
 
 This ensures containers have the necessary device permissions without requiring `privileged: true`.
 
+#### Required Capabilities
+
+RDMA operations require specific Linux capabilities. Add the following `securityContext` to your container spec:
+
+```yaml
+securityContext:
+  capabilities:
+    add:
+      - IPC_LOCK      # Lock memory for RDMA registered buffers
+      - SYS_RESOURCE   # Increase memlock rlimit beyond default
+      - NET_RAW        # Raw packet access for RDMA CM
+```
+
+> **Note:** These capabilities are much narrower than `privileged: true` and are the minimum required for RDMA workloads.
+
 #### Annotation-based Injection
 
 For fine-grained control, use annotations:
